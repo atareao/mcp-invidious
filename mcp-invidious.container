@@ -1,0 +1,25 @@
+[Unit]
+Description=MCP Invidious Search Server
+After=network-online.target
+
+[Container]
+Image=localhost/atareao/invidious-search:latest
+ContainerName=invidious
+PublishPort=3006:3006
+
+# Environment
+Environment=RUST_LOG=mcp_invidious=debug
+Environment=INVIDIOUS_URL=http://localhost:8080
+Environment=MCP_TRANSPORT=http
+Environment=MCP_HOST=0.0.0.0
+Environment=MCP_PORT=3006
+Environment=INVIDIOUS_LANG=es
+
+# Networks
+Network=traefik.network
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
