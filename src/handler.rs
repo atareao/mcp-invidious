@@ -32,10 +32,14 @@ impl ServerHandler for InvidiousHandler {
         _params: Option<PaginatedRequestParams>,
         _runtime: Arc<dyn McpServer>,
     ) -> std::result::Result<ListToolsResult, RpcError> {
+        let tools: Vec<_> = crate::tools::InvidiousTools::tools()
+            .into_iter()
+            .filter(|t| self.config.is_tool_enabled(&t.name))
+            .collect();
         Ok(ListToolsResult {
             meta: None,
             next_cursor: None,
-            tools: crate::tools::InvidiousTools::tools(),
+            tools,
         })
     }
 
@@ -44,6 +48,13 @@ impl ServerHandler for InvidiousHandler {
         params: CallToolRequestParams,
         _runtime: Arc<dyn McpServer>,
     ) -> std::result::Result<CallToolResult, CallToolError> {
+        if !self.config.is_tool_enabled(&params.name) {
+            return Err(CallToolError::from_message(format!(
+                "tool '{}' is disabled; add it to INVIDIOUS_ENABLED_TOOLS or set it to 'all'",
+                params.name
+            )));
+        }
+
         let tool = crate::tools::InvidiousTools::try_from(params).map_err(CallToolError::new)?;
 
         let config = &self.config;

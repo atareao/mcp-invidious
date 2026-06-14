@@ -248,10 +248,12 @@ pub struct InvidiousClient {
 
 impl InvidiousClient {
     pub fn new(config: &AppConfig) -> Result<Self, AppError> {
+        let mut builder = reqwest::Client::builder();
+        if config.invidious_insecure {
+            builder = builder.danger_accept_invalid_certs(true);
+        }
         Ok(Self {
-            http: reqwest::Client::builder()
-                .build()
-                .map_err(AppError::Http)?,
+            http: builder.build().map_err(AppError::Http)?,
             base_url: config.invidious_url.trim_end_matches('/').to_string(),
             default_lang: config.default_lang.clone(),
         })

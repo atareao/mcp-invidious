@@ -7,6 +7,16 @@ pub struct AppConfig {
     pub host: String,
     pub port: u16,
     pub default_lang: String,
+    pub invidious_insecure: bool,
+    pub invidious_enabled_tools: Vec<String>,
+}
+
+impl AppConfig {
+    pub fn is_tool_enabled(&self, name: &str) -> bool {
+        self.invidious_enabled_tools
+            .iter()
+            .any(|t| t == name || t == "all")
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -41,12 +51,30 @@ impl AppConfig {
 
         let default_lang = std::env::var("INVIDIOUS_LANG").unwrap_or_else(|_| "es".to_string());
 
+        let invidious_insecure = std::env::var("INVIDIOUS_INSECURE")
+            .as_deref()
+            .map(|s| s == "1" || s.eq_ignore_ascii_case("true"))
+            .unwrap_or(false);
+
+        let invidious_enabled_tools = std::env::var("INVIDIOUS_ENABLED_TOOLS")
+            .ok()
+            .filter(|s| !s.is_empty())
+            .map(|s| {
+                s.split(',')
+                    .map(|t| t.trim().to_string())
+                    .filter(|t| !t.is_empty())
+                    .collect::<Vec<_>>()
+            })
+            .unwrap_or_default();
+
         Ok(Self {
             invidious_url,
             transport,
             host,
             port,
             default_lang,
+            invidious_insecure,
+            invidious_enabled_tools,
         })
     }
 }

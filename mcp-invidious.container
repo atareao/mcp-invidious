@@ -14,6 +14,8 @@ Environment=MCP_TRANSPORT=http
 Environment=MCP_HOST=0.0.0.0
 Environment=MCP_PORT=3006
 Environment=INVIDIOUS_LANG=es
+Environment=INVIDIOUS_INSECURE=true
+# Environment=INVIDIOUS_ENABLED_TOOLS=search_videos,trending
 
 # Networks
 Network=traefik.network

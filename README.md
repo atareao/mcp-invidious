@@ -51,6 +51,8 @@ INVIDIOUS_URL=https://vid.puffyan.us MCP_TRANSPORT=http cargo run --release
 | `MCP_HOST` | `0.0.0.0` | No | HTTP bind address |
 | `MCP_PORT` | `3005` | No | HTTP bind port |
 | `INVIDIOUS_LANG` | `es` | No | Default search language (ISO 639-1) |
+| `INVIDIOUS_INSECURE` | `false` | No | Disable TLS certificate verification (`true`/`1`) |
+| `INVIDIOUS_ENABLED_TOOLS` | *(all)* | No | Comma-separated list of enabled tools, or `all` |
 
 ## Docker
 
